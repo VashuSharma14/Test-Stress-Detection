@@ -1,0 +1,79 @@
+{% extends 'homeheader.html'%}
+{% block content %}
+<script src="../static/js/jquery-3.3.1.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<section class="w3l-contacts-12" id="contact">
+    <div class="contact-top pt-5">
+     
+
+     <div>
+      <canvas id="oilPriceChart"></canvas>
+  </div>
+
+  <script>
+    // Extract oil price data
+    var oilPriceData = {{ oil_price_data | tojson  }};
+    var dates = Object.keys(oilPriceData).reverse(); // Reverse to display in chronological order
+    var prices = dates.map(function(date) {
+        return parseFloat(oilPriceData[date]["4. close"]); // Extract closing price
+    });
+
+    // Create chart
+    var ctx = document.getElementById('oilPriceChart').getContext('2d');
+    var oilPriceChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Oil Price',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: prices,
+                fill: false,
+            }]
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true,
+                text: 'Oil Price Chart'
+            },
+            scales: {
+                xAxes: [{
+                    type: 'time',
+                    time: {
+                        parser: 'YYYY-MM-DD',
+                        tooltipFormat: 'll',
+                        unit: 'day',
+                        unitStepSize: 1,
+                        displayFormats: {
+                            'day': 'MMM DD'
+                        }
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Date'
+                    }
+                }],
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Price (USD)'
+                    }
+                }]
+            }
+        }
+    });
+</script>
+
+
+
+    </div>
+</section>
+
+
+
+   
+
+{% endblock %}

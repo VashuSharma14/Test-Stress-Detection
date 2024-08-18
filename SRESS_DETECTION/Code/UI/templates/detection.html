@@ -1,0 +1,99 @@
+{% extends 'homeheader.html'%}
+{% block content %}
+<script src="../static/js/jquery-3.3.1.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<section class="w3l-contacts-12" id="contact">
+    <div class="contact-top pt-5">
+        <center>
+            <h3>STRESS DETECTION {
+              0: "Amused",
+              1: "Neutral",
+              2: "Stressed"
+          }</h3>
+        </center>
+        <br>
+        <br>
+        <div class="container py-md-3">
+
+            <div class="row cont-main-top">
+                <div class="contacts12-main col-lg-8 mt-lg-0 mt-5">
+
+                    <form id="fileUploadForm"  class="main-input">
+                        <div class="top-inputs d-grid">
+
+
+                            <label>Upload Data Csv File Here:</label>
+                            <input type="file" name="file" id="file" required>
+                        </div>
+                        <br>
+                        <br>
+
+
+                        <div class="text-right">
+                            <button type="submit" id="btnSubmit" class="btn btn-theme2"> Predict</button>
+                        </div>
+                        <br>
+                        <br>
+
+                    </form>
+                </div>
+                
+                   
+                </div>
+
+               
+        </div>
+</section>
+
+
+
+
+<script>
+  $(document).ready(function () {
+
+    $("#btnSubmit").click(function (event) {
+      event.preventDefault();
+
+      var form = $('#fileUploadForm')[0];
+      var data = new FormData(form);
+      console.log(data)
+      $.ajax({
+        type: 'POST',
+        enctype: 'multipart/form-data',
+        url: "transaction",
+        data: data,
+        processData: false,
+        contentType: false,
+        cache: false,
+        timeout: 600000,
+        success: function (response) {
+
+          Swal.fire({
+            title: response.pred,
+            text: response.message,
+            icon: 'success',
+            confirmButtonText: 'Okay'
+          }).then((result) => {
+            // Check if the "Okay" button was clicked
+            if (result.isConfirmed) {
+              // Redirect to a new URL
+              window.location.href = '/transaction'; // Replace with the desired URL
+            }
+          });
+
+        },
+        error: function (e) {
+          console.log("ERROR : ", e);
+          $("#btnSubmit").prop("disabled", false);
+        }
+      });
+
+    });
+  });
+</script>
+
+{% endblock %}
